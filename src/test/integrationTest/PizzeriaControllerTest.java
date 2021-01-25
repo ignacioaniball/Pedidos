@@ -1,6 +1,4 @@
-package pizzeriaTest;
-
-
+package integrationTest;
 
 import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,11 +18,8 @@ public class PizzeriaControllerTest {
 	private RequestSpecification requestSpec;
 	private RequestSpecification requestWithoutParams;
 
-	//Arrange
 	@BeforeEach
 	public void Setup() {
-//		requestSpec = new PizzeriaRequestSpecBuilder().buildWithDefault("default");
-//		requestWithoutParams = new PizzeriaRequestSpecBuilder().buildWithDefault("requestWithoutParams");
 	}
 
 	@Test
@@ -32,28 +27,10 @@ public class PizzeriaControllerTest {
 	@Disabled
 	public void crearPedido() {
 
-		//Action
 		String responseString = RestAssured.given().spec(requestSpec)
 				.when().get().andReturn()
 				.then().log().all().statusCode(HttpStatus.SC_OK)
 				.and().extract().body().asString();
-
-
-
-
-		//Assertion
-//				RestAssured.post("/pedidos").then()
-//		.statusCode(200)
-//		.body();
-	}
-
-	@Test
-	@DisplayName("Test usan Moquito para hacer Mocks")
-	public void crearPedidoCabeceraTest(){
-
-		//Action
-
-		//Assertion
 
 	}
 }

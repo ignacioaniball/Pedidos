@@ -1,4 +1,4 @@
-package pizzeriaTest.integratioUtilities;
+package integrationTest.integratioUtilities;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -30,7 +30,6 @@ public class BaseTestCase {
 			assertEquals(statusCode, Integer.valueOf(response.get(STATUS).toString()));
 			
 			if (StringUtils.isNotEmpty(metadataMessage)) {
-				
 				assertNotNull(response.get(MESSAGE));
 				assertTrue(response.get(MESSAGE).toString().contains(metadataMessage));
 			}

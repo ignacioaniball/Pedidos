@@ -1,4 +1,4 @@
-package pizzeriaTest.integratioUtilities;
+package integrationTest.integratioUtilities;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHeaders;
