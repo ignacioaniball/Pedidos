@@ -1,7 +1,7 @@
 # Use root/example as user/password credentials
 version: '3'
 services:
-  Pedidos-mysql:
+  pedidos-mysql:
     container_name: pedidos-mysql
     image: mysql:latest
     command: --default-authentication-plugin=mysql_native_password
@@ -13,7 +13,7 @@ services:
       MYSQL_DATABASE: pedidos
       MYSQL_USER: root
       MYSQL_PASSWORD: root
-  covid-app:
+  pedidos-app:
     build:
       context: .
       dockerfile: Dockerfile
