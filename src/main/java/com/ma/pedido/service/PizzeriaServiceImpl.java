@@ -46,7 +46,7 @@ public class PizzeriaServiceImpl implements PizzeriaService {
         List<OrderDetail> orderDetailList = populateOrderDetail(orderRequest);
         Order order = populateOrder(orderRequest, orderDetailList);
         orderService.save(order);
-        for (OrderDetail element: orderDetailList) {
+        for (OrderDetail element : orderDetailList) {
             element.setOrder(order);
             orderDetailService.save(element);
         }
@@ -59,17 +59,17 @@ public class PizzeriaServiceImpl implements PizzeriaService {
     }
 
     private Double calcularDescuento(Double priceTotal) {
-            return priceTotal - (descuento * priceTotal / 100);
+         return priceTotal - (descuento * priceTotal / 100);
     }
 
     private List<OrderDetail> populateOrderDetail(OrderRequest orderRequest) {
         List<OrderDetail> orderDetailList = new ArrayList<>();
-        OrderDetail orderDetail = new OrderDetail();
         for (OrderDetailRequest elements : orderRequest.getDetalle()) {
             try {
                 if (elements.getCantidad() == 0) {
                     throw new NullPointerException();
                 } else {
+                    OrderDetail orderDetail = new OrderDetail();
                     Product product = productService.findOne(elements.getProducto());
                     orderDetail.setProducto(product);
                     orderDetail.setProductId(product.getIdProducto());
@@ -88,7 +88,7 @@ public class PizzeriaServiceImpl implements PizzeriaService {
         Order order = new Order();
         int productTotal = 0;
         double priceTotal = 0;
-        for (OrderDetail elements: orderDetailList) {
+        for (OrderDetail elements : orderDetailList) {
             productTotal += elements.getCantidad();
             priceTotal += elements.getImporte();
         }
@@ -103,6 +103,7 @@ public class PizzeriaServiceImpl implements PizzeriaService {
             order.setTotal(calcularDescuento(priceTotal));
         } else {
             order.setDescuento(false);
+            order.setTotal(priceTotal);
         }
         return order;
     }
