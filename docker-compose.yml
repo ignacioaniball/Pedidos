@@ -1,0 +1,26 @@
+# Use root/example as user/password credentials
+version: '3'
+services:
+  Pedidos-mysql:
+    container_name: pedidos-mysql
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    ports:
+      - 3307:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: pedidos
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+  covid-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: pedidos-app
+    ports:
+      - 8080:8080
+    depends_on:
+      - pedidos-mysql
+    links:
+      - "pedidos-mysql:database"

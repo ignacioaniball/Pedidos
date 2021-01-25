@@ -1,10 +1,14 @@
 package com.ma.pedido.service;
 
-import com.ma.pedido.model.entity.OrderDetail;
 import com.ma.pedido.model.entity.Order;
+import com.ma.pedido.model.entity.OrderDetail;
 import com.ma.pedido.model.entity.Product;
-import com.ma.pedido.model.response.OrderDetailResponse;
+import com.ma.pedido.model.request.OrderDetailRequest;
+import com.ma.pedido.model.request.OrderRequest;
 import com.ma.pedido.model.response.OrderResponse;
+import com.ma.pedido.service.jpa.OrderDetailService;
+import com.ma.pedido.service.jpa.OrderService;
+import com.ma.pedido.service.jpa.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,96 +33,109 @@ public class PizzeriaServiceImpl implements PizzeriaService {
     @Value("${order.discount}")
     public int descuento;
     @Value("${order.amountProduct}")
-    public int productAmountDiscount;
+    public int productAmountForDiscount;
 
     @Autowired
-    public ProductService productoService;
+    public ProductService productService;
     @Autowired
-    public OrderService pedidoCabeceraService;
+    public OrderService orderService;
+    @Autowired
+    public OrderDetailService orderDetailService;
 
     @Override
-    public OrderResponse createPedido(Order order) {
-        OrderResponse orderResponse = compleDetalle(order);
-        orderResponse.setTotal(calcularDescuento(orderResponse));
-        pedidoCabeceraService.save(order);
+    public OrderResponse createOrder(OrderRequest orderRequest) {
+        List<OrderDetail> orderDetailList = populateOrderDetail(orderRequest);
+        Order order = populateOrder(orderRequest, orderDetailList);
+        orderService.save(order);
+        for (OrderDetail element: orderDetailList) {
+            element.setOrder(order);
+            orderDetailService.save(element);
+        }
+        OrderResponse orderResponse = populateOrderResponse(order);
         return orderResponse;
     }
 
     @Override
-    public List<String> listarPedidoCabecera(String fecha) {
-        pedidoCabeceraService.findAll();
-        return null;
+    public List<Order> getOrderList(String date) {
+        List<Order> orderList = orderService.findByDate(dateParse(date));
+        return orderList;
     }
 
-    private Double calcularDescuento(OrderResponse orderResponse) {
-        if (orderResponse.getDescuento()) {
-            Double porcentajeDescuento = descuento * orderResponse.getTotal() / 100;
-            return orderResponse.getTotal() - porcentajeDescuento;
-        }
-        return orderResponse.getTotal();
+    private Double calcularDescuento(Double priceTotal) {
+            return priceTotal - (descuento * priceTotal / 100);
     }
 
-    private OrderResponse compleDetalle(Order order) {
-        double priceTotal = 0;
-        double productTotal = 0;
-        List<OrderDetailResponse> productList = new ArrayList();
-        OrderResponse orderResponse = new OrderResponse();
-        for (OrderDetail elements : order.getDetalle()) {
+    private List<OrderDetail> populateOrderDetail(OrderRequest orderRequest) {
+        List<OrderDetail> orderDetailList = new ArrayList<>();
+        OrderDetail orderDetail = new OrderDetail();
+        for (OrderDetailRequest elements : orderRequest.getDetalle()) {
             try {
                 if (elements.getCantidad() == 0) {
                     throw new NullPointerException();
                 } else {
-
-                    productTotal += elements.getCantidad();
-
-                    Product product = productoService.findOne(elements.getProducto());
-                    Double productPrice = product.getPrecioUnitario();
-                    priceTotal += elements.getCantidad() * productPrice;
-                    OrderDetailResponse orderDetailResponse = new OrderDetailResponse();
-                    orderDetailResponse.setCantidad(elements.getCantidad());
-                    orderDetailResponse.setImporte(product.getPrecioUnitario()*elements.getCantidad());
-                    orderDetailResponse.setNombre(product.getNombreString());
-                    orderDetailResponse.setProducto(product.getIdProducto());
-                    productList.add(orderDetailResponse);
+                    Product product = productService.findOne(elements.getProducto());
+                    orderDetail.setProductos(product);
+                    orderDetail.setProductId(product.getIdProducto());
+                    orderDetail.setCantidad(elements.getCantidad());
+                    orderDetail.setImporte(elements.getCantidad() * product.getPrecioUnitario());
+                    orderDetailList.add(orderDetail);
                 }
             } catch (NullPointerException e) {
                 LOGGER.info("La variable cantidad, no puede ser null.", e);
             }
         }
-        if (productTotal >= productAmountDiscount) {
-            orderResponse.setDescuento(true);
-        }else {
-            orderResponse.setDescuento(false);
+        return orderDetailList;
+    }
+
+    private Order populateOrder(OrderRequest orderRequest, List<OrderDetail> orderDetailList) {
+        Order order = new Order();
+        int productTotal = 0;
+        double priceTotal = 0;
+        for (OrderDetail elements: orderDetailList) {
+            productTotal += elements.getCantidad();
+            priceTotal += elements.getImporte();
         }
-        orderResponse.setEstado(PENDINGSTATUS);
-        orderResponse.setDescuento(productTotal >= productAmountDiscount);
-        orderResponse.setFecha(dateParse(LocalDate.now()).toString());
-        orderResponse.setTotal(priceTotal);
-        orderResponse.setEmail(order.getEmail());
+        order.setFecha(dateParse(LocalDate.now().toString()));
+        order.setDireccion(orderRequest.getDireccion());
+        order.setEmail(orderRequest.getEmail());
+        order.setTelefono(orderRequest.getTelefono());
+        order.setHorario(orderRequest.getHorario());
+        order.setEstado(PENDINGSTATUS);
+        if (productTotal >= productAmountForDiscount) {
+            order.setDescuento(true);
+            order.setTotal(calcularDescuento(priceTotal));
+        } else {
+            order.setDescuento(false);
+        }
+        return order;
+    }
+
+    private OrderResponse populateOrderResponse(Order order) {
+        OrderResponse orderResponse = new OrderResponse(order);
+        orderResponse.setFecha(order.getFecha());
         orderResponse.setDireccion(order.getDireccion());
+        orderResponse.setEmail(order.getEmail());
         orderResponse.setTelefono(order.getTelefono());
-        orderResponse.setHorario(order.getHorario());
-        orderResponse.setDetalle(productList);
+        orderResponse.setHorario(order.getTelefono());
+        orderResponse.setTotal(order.getTotal());
+        orderResponse.setDescuento(order.getDescuento());
+        orderResponse.setEstado(order.getEstado());
         return orderResponse;
     }
 
-    private Date dateParse(LocalDate localDate) {
-        SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT, Locale.getDefault());
-        java.util.Date publishedParse = null;
+    private Date dateParse(String date) {
+        SimpleDateFormat format = new SimpleDateFormat(DATE_FORMAT);
+        java.util.Date dateParse = null;
         try {
-            if (StringUtils.isEmpty(localDate)) {
-                throw new NullPointerException("The localDate date can not be empty.");
+            if (StringUtils.isEmpty(date)) {
+                throw new NullPointerException("The date date can not be empty.");
             }
-            publishedParse = format.parse(String.valueOf(localDate));
+            dateParse = format.parse(String.valueOf(date));
         } catch (ParseException e) {
-            LOGGER.error("Error parsing {} variable.", localDate);
+            LOGGER.error("Error parsing {} variable.", date);
         } catch (NullPointerException e) {
-            LOGGER.error("The variable {} can not be null", localDate);
+            LOGGER.error("The variable {} can not be null", date);
         }
-        return publishedParse;
-    }
-
-    private void validateVariable(){
-
+        return dateParse;
     }
 }

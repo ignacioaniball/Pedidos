@@ -1,10 +1,9 @@
-package com.ma.pedido.service;
+package com.ma.pedido.service.jpa;
 
 import java.util.Date;
 import java.util.List;
 
 
-import com.ma.pedido.model.response.OrderResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +30,7 @@ public class OrderServiceImpl implements OrderService {
 	}
 
 	@Override
-	public List<OrderResponse> findByDate(Date date) {
+	public List<Order> findByDate(Date date) {
 		return pedidoCabeceraDao.findByDate(date);
 	}
 
@@ -39,12 +38,6 @@ public class OrderServiceImpl implements OrderService {
 	@Transactional(readOnly = true)
 	public Order findOne(Long id) {
 		return pedidoCabeceraDao.findById(id).orElse(null);
-	}
-
-	@Override
-	@Transactional(readOnly = true)
-	public Order fetchByIdWithProducto(Long id) {
-		return null;
 	}
 
 	@Override

@@ -1,7 +1,10 @@
 package com.ma.pedido.model.response;
 
 import com.fasterxml.jackson.annotation.*;
+import com.ma.pedido.model.entity.Order;
+import com.ma.pedido.model.entity.OrderDetail;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,7 +24,7 @@ import java.util.Map;
 public class OrderResponse {
 
     @JsonProperty("fecha")
-    private String fecha;
+    private Date fecha;
     @JsonProperty("direccion")
     private String direccion;
     @JsonProperty("email")
@@ -31,7 +34,7 @@ public class OrderResponse {
     @JsonProperty("horario")
     private String horario;
     @JsonProperty("detalle")
-    private List<OrderDetailResponse> detalle = null;
+    private List<OrderDetail> detalle = null;
     @JsonProperty("total")
     private Double total;
     @JsonProperty("descuento")
@@ -39,13 +42,16 @@ public class OrderResponse {
     @JsonProperty("estado")
     private String estado;
 
+    public OrderResponse(Order order) {
+    }
+
     @JsonProperty("fecha")
-    public String getFecha() {
+    public Date getFecha() {
         return fecha;
     }
 
     @JsonProperty("fecha")
-    public void setFecha(String fecha) {
+    public void setFecha(Date fecha) {
         this.fecha = fecha;
     }
 
@@ -90,12 +96,12 @@ public class OrderResponse {
     }
 
     @JsonProperty("detalle")
-    public List<OrderDetailResponse> getDetalle() {
+    public List<OrderDetail> getDetalle() {
         return detalle;
     }
 
     @JsonProperty("detalle")
-    public void setDetalle(List<OrderDetailResponse> detalle) {
+    public void setDetalle(List<OrderDetail> detalle) {
         this.detalle = detalle;
     }
 

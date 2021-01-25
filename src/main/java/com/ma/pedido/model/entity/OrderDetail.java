@@ -1,41 +1,57 @@
 package com.ma.pedido.model.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.List;
 
 @Entity
-@Table(name = "pedidos_detalle")
+@Table(name = "pedido_detalle")
 public class OrderDetail implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @ManyToOne(targetEntity = Order.class, fetch = FetchType.LAZY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "pedido_detalle_id")
+    private Long pedidoDetalleId;
+    @ManyToOne(cascade = CascadeType.ALL, targetEntity = Order.class)
     @JoinColumn(name = "pedido_cabecera_id")
-    private Long pedidoCabeceraId;
-    @JsonProperty("producto")
-    private String producto;
-    @JsonProperty("cantidad")
+    private Order order;
+    @OneToOne(targetEntity = Product.class, fetch = FetchType.LAZY)
+    @JoinColumn(name = "producto_id")
+    private Product producto;
+    @NotEmpty
+    private String productId;
+    @NotEmpty
+    @Column(name = "cantidad")
     private Integer cantidad;
     @NotEmpty
     @Column(name = "importe")
-    private int importe;
-    @OneToOne(targetEntity = Product.class, fetch = FetchType.LAZY)
-    @JoinColumn(name = "producto_id")
-    private List<Product> productos;
+    private Double importe;
 
-    public String getProducto() {
+    public Order getOrder() {
+        return order;
+    }
+
+    public void setOrder(Order order) {
+        this.order = order;
+    }
+
+    public Product getProductos() {
         return producto;
     }
 
-    public void setProducto(String producto) {
+    public void setProductos(Product productos) {
         this.producto = producto;
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
     }
 
     public Integer getCantidad() {
@@ -46,19 +62,11 @@ public class OrderDetail implements Serializable {
         this.cantidad = cantidad;
     }
 
-    public int getImporte() {
+    public Double getImporte() {
         return importe;
     }
 
-    public void setImporte(int importe) {
+    public void setImporte(Double importe) {
         this.importe = importe;
-    }
-
-    public List<Product> getProductos() {
-        return productos;
-    }
-
-    public void setProductos(List<Product> productos) {
-        this.productos = productos;
     }
 }

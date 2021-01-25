@@ -1,4 +1,4 @@
-package com.ma.pedido.service;
+package com.ma.pedido.service.jpa;
 
 import java.util.List;
 

@@ -1,5 +1,7 @@
 package com.ma.pedido.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
@@ -10,40 +12,44 @@ import java.io.Serializable;
 public class Product implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.TABLE)
-    @Column(name = "producto_id")
-    private String productoId;
+    @Column(name = "id")
+    @JsonProperty("id")
+    private String id;
 
     @NotEmpty
-    @Column(name = "nombre_producto")
-    private String nombreProducto;
+    @Column(name = "nombre")
+    @JsonProperty("nombre")
+    private String nombre;
 
     @NotEmpty
     @Column(name = "description_corta")
+    @JsonProperty("descripcionCorta")
     private String descripcionCorta;
 
     @NotEmpty
     @Column(name = "description_larga")
-    private String descriptcionLarga;
+    @JsonProperty("descripcionLarga")
+    private String descripcionLarga;
 
     @NotNull
     @Column(name = "precio_unitario")
+    @JsonProperty("precioUnitario")
     private Double precioUnitario;
 
     public String getIdProducto() {
-        return productoId;
+        return id;
     }
 
     public void setIdProducto(String idProducto) {
-        this.productoId = idProducto;
+        this.id = idProducto;
     }
 
     public String getNombreString() {
-        return nombreProducto;
+        return nombre;
     }
 
     public void setNombreString(String nombreString) {
-        this.nombreProducto = nombreString;
+        this.nombre = nombreString;
     }
 
     public String getDescripcionCorta() {
@@ -55,11 +61,11 @@ public class Product implements Serializable {
     }
 
     public String getDescriptcionLargaString() {
-        return descriptcionLarga;
+        return descripcionLarga;
     }
 
     public void setDescriptcionLargaString(String descriptcionLargaString) {
-        this.descriptcionLarga = descriptcionLargaString;
+        this.descripcionLarga = descriptcionLargaString;
     }
 
     public Double getPrecioUnitario() {
