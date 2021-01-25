@@ -1,4 +1,4 @@
-package com.ma.pedido.service;
+package com.ma.pedido.service.jpa;
 
 import com.ma.pedido.model.dao.ProductDao;
 import com.ma.pedido.model.entity.Product;

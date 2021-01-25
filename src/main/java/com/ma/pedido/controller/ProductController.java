@@ -1,7 +1,8 @@
 package com.ma.pedido.controller;
 
 import com.ma.pedido.model.entity.Product;
-import com.ma.pedido.service.ProductService;
+import com.ma.pedido.model.response.ProductResponse;
+import com.ma.pedido.service.jpa.ProductService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,15 +34,20 @@ public class ProductController {
         productModified.setDescripcionCorta(product.getDescripcionCorta());
         productModified.setDescriptcionLargaString(product.getDescriptcionLargaString());
         productService.save(productModified);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(value = "/productos/{product_id}", produces = "application/json")
-    public ResponseEntity getProduct(@PathVariable(value = "product_id") String product_id, @RequestBody Product product) {
-        logger.debug("Request Body ".concat(product.toString()));
+    public ResponseEntity getProduct(@PathVariable(value = "product_id") String product_id) {
         try{
-        Product productModified = productService.findOne(product_id);
-        return new ResponseEntity(productModified, HttpStatus.CREATED);
+        Product product = productService.findOne(product_id);
+            ProductResponse productResponse = new ProductResponse();
+            productResponse.setId(product.getIdProducto());
+            productResponse.setNombre(product.getNombreString());
+            productResponse.setDescripcionCorta(product.getDescripcionCorta());
+            productResponse.setDescripcionLarga(product.getDescriptcionLargaString());
+            productResponse.setPrecioUnitario(product.getPrecioUnitario());
+        return new ResponseEntity(productResponse, HttpStatus.OK);
         }catch (NullPointerException e){
             return new ResponseEntity("Producto no encontrado", HttpStatus.NOT_FOUND);
         }
@@ -50,6 +56,6 @@ public class ProductController {
     @DeleteMapping(value = "/productos/{product_id}", produces = "application/json")
     public ResponseEntity deleteProduct(@PathVariable(value = "product_id") String product_id) {
         productService.delete(product_id);
-        return new ResponseEntity(HttpStatus.CREATED);
+        return new ResponseEntity(HttpStatus.NO_CONTENT);
     }
 }

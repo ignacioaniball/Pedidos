@@ -7,6 +7,6 @@ import org.springframework.data.repository.query.Param;
 
 public interface ProductDao extends CrudRepository<Product, String> {
 
-    @Query(value = "SELECT * FROM producto WHERE producto_id = :product ", nativeQuery = true)
+    @Query(value = "SELECT * FROM producto WHERE id = :product ", nativeQuery = true)
     Product findOne(@Param("product") String product);
 }
