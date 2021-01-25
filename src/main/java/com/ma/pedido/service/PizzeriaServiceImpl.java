@@ -5,6 +5,7 @@ import com.ma.pedido.model.entity.OrderDetail;
 import com.ma.pedido.model.entity.Product;
 import com.ma.pedido.model.request.OrderDetailRequest;
 import com.ma.pedido.model.request.OrderRequest;
+import com.ma.pedido.model.response.OrderDetailResponse;
 import com.ma.pedido.model.response.OrderResponse;
 import com.ma.pedido.service.jpa.OrderDetailService;
 import com.ma.pedido.service.jpa.OrderService;
@@ -50,7 +51,7 @@ public class PizzeriaServiceImpl implements PizzeriaService {
             element.setOrder(order);
             orderDetailService.save(element);
         }
-        return populateOrderResponse(order);
+        return populateOrderResponse(order, orderDetailList);
     }
 
     @Override
@@ -108,7 +109,7 @@ public class PizzeriaServiceImpl implements PizzeriaService {
         return order;
     }
 
-    private OrderResponse populateOrderResponse(Order order) {
+    private OrderResponse populateOrderResponse(Order order, List<OrderDetail> orderDetailList) {
         OrderResponse orderResponse = new OrderResponse(order);
         orderResponse.setFecha(order.getFecha());
         orderResponse.setDireccion(order.getDireccion());
@@ -118,6 +119,16 @@ public class PizzeriaServiceImpl implements PizzeriaService {
         orderResponse.setTotal(order.getTotal());
         orderResponse.setDescuento(order.getDescuento());
         orderResponse.setEstado(order.getEstado());
+        List<OrderDetailResponse> orderDetailListResponse = new ArrayList<>();
+        for (OrderDetail element: orderDetailList) {
+        OrderDetailResponse orderDetailResponse = new OrderDetailResponse();
+        orderDetailResponse.setProducto(element.getProductId());
+        orderDetailResponse.setNombre(element.getProducto().getNombreString());
+        orderDetailResponse.setCantidad(element.getCantidad());
+        orderDetailResponse.setImporte(element.getImporte());
+        orderDetailListResponse.add(orderDetailResponse);
+        }
+        orderResponse.setDetalle(orderDetailListResponse);
         return orderResponse;
     }
 
