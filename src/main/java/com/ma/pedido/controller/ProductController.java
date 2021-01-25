@@ -1,5 +1,6 @@
 package com.ma.pedido.controller;
 
+import com.ma.pedido.model.dto.ProductDto;
 import com.ma.pedido.model.entity.Product;
 import com.ma.pedido.model.response.ProductResponse;
 import com.ma.pedido.service.jpa.ProductService;
@@ -14,48 +15,54 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/v1")
 public class ProductController {
 
-    private static final Logger logger = LoggerFactory.getLogger(PizzeriaController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
     @Autowired
     public ProductService productService;
 
     @PostMapping(value = "/productos", produces = "application/json")
-    public ResponseEntity createProduct(@RequestBody Product producto) {
-        logger.debug("Request Body ".concat(producto.toString()));
-        productService.save(producto);
-        return new ResponseEntity(HttpStatus.CREATED);
+    public ResponseEntity<HttpStatus> createProduct(@RequestBody ProductDto productDto) {
+        logger.debug("Request Body ".concat(productDto.toString()));
+        Product product = new Product();
+        product.setIdProducto(productDto.getId());
+        product.setNombreString(productDto.getNombre());
+        product.setDescripcionCorta(productDto.getDescripcionCorta());
+        product.setDescripcionLargaString(productDto.getDescripcionLarga());
+        product.setPrecioUnitario(productDto.getPrecioUnitario());
+        productService.save(product);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping(value = "/productos/{product_id}", produces = "application/json")
-    public ResponseEntity modifyProduct(@PathVariable(value = "product_id") String product_id, @RequestBody Product product) {
-        logger.debug("Request Body ".concat(product_id.toString()));
-        Product productModified = productService.findOne(product_id);
-        productModified.setNombreString(product.getNombreString());
-        productModified.setPrecioUnitario(product.getPrecioUnitario());
-        productModified.setDescripcionCorta(product.getDescripcionCorta());
-        productModified.setDescriptcionLargaString(product.getDescriptcionLargaString());
+    public ResponseEntity<HttpStatus> modifyProduct(@PathVariable(value = "product_id") String productId, @RequestBody ProductDto productDto) {
+        logger.debug("Request Body ".concat(productId));
+        Product productModified = productService.findOne(productId);
+        productModified.setNombreString(productDto.getNombre());
+        productModified.setPrecioUnitario(productDto.getPrecioUnitario());
+        productModified.setDescripcionCorta(productDto.getDescripcionCorta());
+        productModified.setDescripcionLargaString(productDto.getDescripcionLarga());
         productService.save(productModified);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @GetMapping(value = "/productos/{product_id}", produces = "application/json")
-    public ResponseEntity getProduct(@PathVariable(value = "product_id") String product_id) {
+    public ResponseEntity<ProductResponse> getProduct(@PathVariable(value = "product_id") String productId) {
         try{
-        Product product = productService.findOne(product_id);
+        Product product = productService.findOne(productId);
             ProductResponse productResponse = new ProductResponse();
             productResponse.setId(product.getIdProducto());
             productResponse.setNombre(product.getNombreString());
             productResponse.setDescripcionCorta(product.getDescripcionCorta());
-            productResponse.setDescripcionLarga(product.getDescriptcionLargaString());
+            productResponse.setDescripcionLarga(product.getDescripcionLargaString());
             productResponse.setPrecioUnitario(product.getPrecioUnitario());
-        return new ResponseEntity(productResponse, HttpStatus.OK);
+        return new ResponseEntity<>(productResponse, HttpStatus.OK);
         }catch (NullPointerException e){
             return new ResponseEntity("Producto no encontrado", HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping(value = "/productos/{product_id}", produces = "application/json")
-    public ResponseEntity deleteProduct(@PathVariable(value = "product_id") String product_id) {
-        productService.delete(product_id);
-        return new ResponseEntity(HttpStatus.NO_CONTENT);
+    public ResponseEntity<HttpStatus> deleteProduct(@PathVariable(value = "product_id") String productId) {
+        productService.delete(productId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

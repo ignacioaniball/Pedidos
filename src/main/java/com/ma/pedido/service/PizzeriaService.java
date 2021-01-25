@@ -1,6 +1,5 @@
 package com.ma.pedido.service;
 
-import com.ma.pedido.model.entity.Order;
 import com.ma.pedido.model.request.OrderRequest;
 import com.ma.pedido.model.response.OrderResponse;
 

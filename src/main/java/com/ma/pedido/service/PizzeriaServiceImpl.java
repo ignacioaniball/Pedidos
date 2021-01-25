@@ -22,7 +22,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 @Service
 public class PizzeriaServiceImpl implements PizzeriaService {
@@ -51,14 +50,12 @@ public class PizzeriaServiceImpl implements PizzeriaService {
             element.setOrder(order);
             orderDetailService.save(element);
         }
-        OrderResponse orderResponse = populateOrderResponse(order);
-        return orderResponse;
+        return populateOrderResponse(order);
     }
 
     @Override
     public List<Order> getOrderList(String date) {
-        List<Order> orderList = orderService.findByDate(dateParse(date));
-        return orderList;
+        return orderService.findByDate(dateParse(date));
     }
 
     private Double calcularDescuento(Double priceTotal) {
@@ -74,7 +71,7 @@ public class PizzeriaServiceImpl implements PizzeriaService {
                     throw new NullPointerException();
                 } else {
                     Product product = productService.findOne(elements.getProducto());
-                    orderDetail.setProductos(product);
+                    orderDetail.setProducto(product);
                     orderDetail.setProductId(product.getIdProducto());
                     orderDetail.setCantidad(elements.getCantidad());
                     orderDetail.setImporte(elements.getCantidad() * product.getPrecioUnitario());

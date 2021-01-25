@@ -1,9 +1,8 @@
 package com.ma.pedido.model.request;
 
-import com.fasterxml.jackson.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -17,22 +16,18 @@ public class OrderDetailRequest {
     @JsonProperty("cantidad")
     private Integer cantidad;
 
-    @JsonProperty("producto")
     public String getProducto() {
         return producto;
     }
 
-    @JsonProperty("producto")
     public void setProducto(String producto) {
         this.producto = producto;
     }
 
-    @JsonProperty("cantidad")
     public Integer getCantidad() {
         return cantidad;
     }
 
-    @JsonProperty("cantidad")
     public void setCantidad(Integer cantidad) {
         this.cantidad = cantidad;
     }

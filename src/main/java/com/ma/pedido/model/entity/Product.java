@@ -60,11 +60,11 @@ public class Product implements Serializable {
         this.descripcionCorta = descripcionCorta;
     }
 
-    public String getDescriptcionLargaString() {
+    public String getDescripcionLargaString() {
         return descripcionLarga;
     }
 
-    public void setDescriptcionLargaString(String descriptcionLargaString) {
+    public void setDescripcionLargaString(String descriptcionLargaString) {
         this.descripcionLarga = descriptcionLargaString;
     }
 
