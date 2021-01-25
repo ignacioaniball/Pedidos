@@ -34,7 +34,7 @@ public class OrderResponse {
     @JsonProperty("horario")
     private String horario;
     @JsonProperty("detalle")
-    private List<OrderDetail> detalle = null;
+    private List<OrderDetailResponse> detalle = null;
     @JsonProperty("total")
     private Double total;
     @JsonProperty("descuento")
@@ -96,12 +96,12 @@ public class OrderResponse {
     }
 
     @JsonProperty("detalle")
-    public List<OrderDetail> getDetalle() {
+    public List<OrderDetailResponse> getDetalle() {
         return detalle;
     }
 
     @JsonProperty("detalle")
-    public void setDetalle(List<OrderDetail> detalle) {
+    public void setDetalle(List<OrderDetailResponse> detalle) {
         this.detalle = detalle;
     }
 

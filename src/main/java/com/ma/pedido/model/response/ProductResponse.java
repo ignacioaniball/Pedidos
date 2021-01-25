@@ -3,6 +3,13 @@ package com.ma.pedido.model.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.ma.pedido.model.entity.OrderDetail;
+
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
+import java.util.List;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -24,6 +31,8 @@ public class ProductResponse {
     private String descripcionLarga;
     @JsonProperty("precioUnitario")
     private Double precioUnitario;
+    @JsonProperty("detalle")
+    private List<OrderDetail> detalle = null;
 
     @JsonProperty("id")
     public String getId() {
@@ -75,5 +84,12 @@ public class ProductResponse {
         this.precioUnitario = precioUnitario;
     }
 
+    public List<OrderDetail> getDetalle() {
+        return detalle;
+    }
+
+    public void setDetalle(List<OrderDetail> detalle) {
+        this.detalle = detalle;
+    }
 }
 
