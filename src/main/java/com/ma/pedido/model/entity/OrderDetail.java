@@ -3,7 +3,6 @@ package com.ma.pedido.model.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.util.List;
 
 @Entity
 @Table(name = "pedido_detalle")
@@ -38,11 +37,11 @@ public class OrderDetail implements Serializable {
         this.order = order;
     }
 
-    public Product getProductos() {
+    public Product getProducto() {
         return producto;
     }
 
-    public void setProductos(Product productos) {
+    public void setProducto(Product producto) {
         this.producto = producto;
     }
 

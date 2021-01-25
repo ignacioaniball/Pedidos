@@ -1,9 +1,8 @@
 package com.ma.pedido.model.response;
 
-import com.fasterxml.jackson.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -22,8 +21,6 @@ public class OrderDetailResponse {
     private Integer cantidad;
     @JsonProperty("importe")
     private Double importe;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("producto")
     public String getProducto() {
@@ -63,16 +60,6 @@ public class OrderDetailResponse {
     @JsonProperty("importe")
     public void setImporte(Double importe) {
         this.importe = importe;
-    }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }

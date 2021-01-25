@@ -11,4 +11,4 @@ RUN mvn -X clean package -DskipTests
 FROM openjdk:11-jre
 COPY --from=build /usr/pedido/target/pedidos-0.0.1-SNAPSHOT.jar /usr/local/lib
 EXPOSE 8080
-ENTRYPOINT ["java","-jar","/usr/local/lib/microservicio-0.0.1-SNAPSHOT.war"]
+ENTRYPOINT ["java","-jar","/usr/local/lib/pedidos-0.0.1-SNAPSHOT.jar"]
