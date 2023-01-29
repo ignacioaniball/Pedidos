@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="info" name="birras" packages="com/santander/birras">
+    <Appenders>
+        <Console name="ConsoleJSONAppender" target="SYSTEM_OUT">
+            <JsonLayout complete="true" compact="true">
+                <KeyValuePair key="myCustomField" value="myCustomValue" />
+            </JsonLayout>
+            <PatternLayout pattern="%style{%date{DEFAULT}}{yellow}
+      %highlight{%-5level}{FATAL=bg_red, ERROR=red, WARN=yellow, INFO=green}
+      %message"/>
+        </Console>
+    </Appenders>
+
+    <Logger name="CONSOLE_JSON_APPENDER" level="TRACE" additivity="false">
+        <AppenderRef ref="ConsoleJSONAppender" />
+    </Logger>
+</Configuration>
